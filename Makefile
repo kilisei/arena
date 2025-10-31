@@ -4,3 +4,6 @@ build:
 run: build 
 	./bin/arena
 
+valgrind: build 
+	valgrind ./bin/arena
+

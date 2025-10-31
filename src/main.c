@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -102,16 +103,19 @@ void arena_print(Arena *arena) {
   size_t level = 0;
   Arena *current = arena;
   while (current != NULL) {
+    if (level > 0) {
+      printf("\n");
+    }
     print_indent(level);
-    printf("arena: %p\n", (void *)current);
+    printf("Arena: %p\n", (void *)current);
     print_indent(level);
-    printf("capacity: %zu\n", current->capacity);
+    printf("Capacity: %zu\n", current->capacity);
     print_indent(level);
-    printf("offset: %zu\n", current->offset);
+    printf("Offset: %zu\n", current->offset);
     print_indent(level);
-    printf("next: %p\n", (void *)current->next);
+    printf("Next: %p\n", (void *)current->next);
     print_indent(level);
-    printf("bytes: %p\n", (void *)current->bytes);
+    printf("Bytes: %p\n", (void *)current->bytes);
 
     level++;
     current = current->next;
@@ -124,20 +128,19 @@ int main(void) {
   arena_print(&arena);
 
   while (1) {
+    printf("=================================================================\n");
 
-    uint32_t s;
-    printf("size to alloc: ");
+    uint32_t size = 0;
+    printf("bytes to alloc: ");
     fflush(stdout);
 
-    if (scanf("%u", &s) != 1) {
+    if (scanf("%u", &size) != 1 || size <= 0) {
       fprintf(stderr, "Invalid input\n");
       arena_free(&arena);
       return EXIT_FAILURE;
     }
 
-    printf("alloc %u\n", s);
-
-    void *ptr = arena_alloc(&arena, s * sizeof(uint8_t));
+    void *ptr = arena_alloc(&arena, size * sizeof(uint8_t));
     if (ptr == NULL) {
       fprintf(stderr, "Allocation failed\n");
       arena_free(&arena);

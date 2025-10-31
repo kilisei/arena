@@ -19,6 +19,7 @@
             clang
             clang-tools
             fd
+            valgrind
             gnumake
           ];
         };
